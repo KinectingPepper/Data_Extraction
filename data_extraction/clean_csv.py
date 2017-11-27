@@ -314,6 +314,7 @@ def cleancsv(csvfile,oef,saveloc=None):
     newfile2 = newfile2.reset_index(drop=True)
     
     if(len(newfile2) > 0):
+
         if(saveloc != None):
             newfile2.to_csv(saveloc) 
         return newfile2
@@ -353,6 +354,24 @@ def compare(files,saveloc):
     plt.savefig(saveloc)
     plt.close()
     return
+
+#wrapper that gives a dataframe with an additional column containing the sort of excercise
+def WrapperGetPart(csvfile,oef):
+    if(type(csvfile) != type(pd.DataFrame())):            
+        print('invalid input')
+        return        
+    excerciselist=['' for X in range(len(csvfile))]
+    part=['l','r','lr']
+    for i in part:
+        print('test')
+        file=GetPart(csvfile,oef,i)
+        start=file.frameNum.iloc[0]
+        end=file.frameNum.iloc[-1]
+        for j in range(len(csvfile)):
+            if(csvfile.frameNum.iloc[j]>=start and csvfile.frameNum.iloc[j]<=end):
+                excerciselist[j]=i                
+    csvfile=csvfile.assign(Side=pd.Series(iets))                    
+    return csvfile
 
 #Used by GetPart to loop edge values
 def RecursiveLoop(values, start,end,low,sink):    
